@@ -49,6 +49,13 @@ main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
 .empty{text-align:center;padding:50px 20px;color:#8a8171;font-size:14.5px;}
 .empty .big{font-family:var(--display);font-size:19px;color:var(--navy);margin-bottom:6px;}
 
+/* Stats banner */
+.stats-banner{display:flex;gap:0;background:linear-gradient(135deg,var(--navy),var(--navy-2));border:1px solid var(--gold);border-radius:6px;margin-bottom:16px;overflow:hidden;}
+.stat-box{flex:1;padding:14px 12px;text-align:center;border-right:1px solid rgba(201,160,77,.2);}
+.stat-box:last-child{border-right:none;}
+.stat-value{font-family:var(--display);font-size:22px;font-weight:800;color:var(--gold-light);}
+.stat-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--cream);opacity:.7;margin-top:3px;}
+
 .sort-bar,.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
 .sort-bar .sort-label,.filter-bar .filter-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8a8171;margin-right:4px;}
 .sort-btn,.filter-btn{font-family:var(--mono);font-size:10.5px;background:#fff;border:1px solid var(--line);border-radius:3px;padding:5px 10px;cursor:pointer;color:#6b6250;transition:.15s;}
@@ -186,6 +193,7 @@ footer a{color:#8a8171;}
   <div id="setup-banner"></div>
   <section id="view-calendrier" class="view active"><div id="cal-list"><div class="empty">Chargement…</div></div></section>
   <section id="view-messeries" class="view">
+    <div id="stats-banner"></div>
     <div class="sort-bar">
       <span class="sort-label">Trier :</span>
       <button class="sort-btn active" data-sort="added">Dernier ajouté</button>
@@ -310,6 +318,7 @@ async function fetchAllDetails(){
     show.networks=(d.networks||[]).map(n=>n.name).join(", ");
     show.genres=(d.genres||[]).map(g=>g.name);
     show.genre_ids=(d.genres||[]).map(g=>g.id);
+    show.runtime=(d.episode_run_time&&d.episode_run_time.length)?d.episode_run_time[0]:(d.last_episode_to_air&&d.last_episode_to_air.runtime?d.last_episode_to_air.runtime:45);
     showDetails[show.id]=d;
     const ns=(d.seasons||[]).filter(s=>s.season_number>0).map(s=>({season_number:s.season_number,name:s.name,episode_count:s.episode_count}));
     if(ns.length)show.seasons=ns;
@@ -414,6 +423,7 @@ async function followShow(id,btn){
     const show={id:d.id,name:d.name,poster_path:d.poster_path,status:d.status,
       first_air_date:d.first_air_date||'',networks:(d.networks||[]).map(n=>n.name).join(", "),
       genres:(d.genres||[]).map(g=>g.name),genre_ids:(d.genres||[]).map(g=>g.id),
+      runtime:(d.episode_run_time&&d.episode_run_time.length)?d.episode_run_time[0]:(d.last_episode_to_air&&d.last_episode_to_air.runtime?d.last_episode_to_air.runtime:45),
       seasons:(d.seasons||[]).filter(s=>s.season_number>0).map(s=>({season_number:s.season_number,name:s.name,episode_count:s.episode_count})),
       watched:{}};
     if(d.next_episode_to_air)nextEpisodes[show.id]=d.next_episode_to_air;
@@ -441,7 +451,35 @@ function makeCard(show,extraHtml){
 }
 
 // Mes séries
+function renderStats(){
+  const banner=document.getElementById('stats-banner');
+  if(!state.shows.length){banner.innerHTML='';return;}
+  const totalShows=state.shows.length;
+  const totalEps=state.shows.reduce((a,s)=>a+s.seasons.reduce((b,sn)=>b+sn.episode_count,0),0);
+  const watchedEps=state.shows.reduce((a,s)=>a+Object.values(s.watched||{}).reduce((b,arr)=>b+arr.length,0),0);
+  const totalMinutes=state.shows.reduce((a,s)=>{
+    const rt=s.runtime||45;
+    const w=Object.values(s.watched||{}).reduce((b,arr)=>b+arr.length,0);
+    return a+w*rt;
+  },0);
+  const days=Math.floor(totalMinutes/1440);
+  const hours=Math.floor((totalMinutes%1440)/60);
+  const mins=totalMinutes%60;
+  let timeStr='';
+  if(days>0)timeStr+=days+'j ';
+  if(hours>0)timeStr+=hours+'h ';
+  timeStr+=mins+'min';
+  const pct=totalEps>0?Math.round(watchedEps/totalEps*100):0;
+  banner.innerHTML=`<div class="stats-banner">
+    <div class="stat-box"><div class="stat-value">${totalShows}</div><div class="stat-label">Séries suivies</div></div>
+    <div class="stat-box"><div class="stat-value">${watchedEps}<span style="font-size:13px;opacity:.6;">/${totalEps}</span></div><div class="stat-label">Épisodes vus</div></div>
+    <div class="stat-box"><div class="stat-value">${timeStr}</div><div class="stat-label">Temps de visionnage</div></div>
+    <div class="stat-box"><div class="stat-value">${pct}%</div><div class="stat-label">Progression</div></div>
+  </div>`;
+}
+
 function renderMesSeries(){
+  renderStats();
   const box=document.getElementById('shows-list');
   if(!state.shows.length){box.innerHTML='<div class="empty"><div class="big">Aucune série suivie</div></div>';return;}
   const openIds=new Set();
@@ -603,6 +641,7 @@ function updateCardInPlace(show){
   card.querySelector('.progress-bar > div').style.width=pct+'%';
   card.querySelector('.progress-pct').textContent=pct+'%';
   card.querySelector('.status').textContent=statusLabel(show.status)+' · '+wCount+'/'+total+' ép.'+(show.networks?' · '+show.networks:'');
+  renderStats();
 }
 function statusLabel(s){return{'Returning Series':'En cours','Ended':'Terminée','Canceled':'Annulée','In Production':'En production','Planned':'Prévue'}[s]||(s||'—');}
 
