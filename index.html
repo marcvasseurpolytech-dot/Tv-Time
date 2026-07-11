@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi Séries — Marc Vasseur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Serif+4:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0d1b2e;
+    --navy-2:#16283f;
+    --gold:#c9a04d;
+    --gold-light:#e2c789;
+    --cream:#f6f2e8;
+    --cream-dim:#ece4d2;
+    --ink:#1b2432;
+    --line: rgba(201,160,77,0.25);
+    --ok:#4a7c59;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --display: 'Playfair Display', Georgia, serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--serif);
+    min-height:100vh;
+  }
+  header{
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: var(--cream);
+    padding: 28px 24px 22px;
+    border-bottom: 3px solid var(--gold);
+  }
+  header .eyebrow{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+  header h1{
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 30px;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  nav.tabs{
+    display:flex;
+    gap: 4px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    background: var(--cream);
+    z-index: 10;
+    border-bottom: 1px solid var(--line);
+  }
+  nav.tabs button{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    padding: 14px 16px;
+    color: #6b6250;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  nav.tabs button.active{
+    color: var(--navy);
+    border-bottom-color: var(--gold);
+    font-weight: 600;
+  }
+  main{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  .empty{
+    text-align:center;
+    padding: 60px 20px;
+    color:#8a8171;
+    font-family: var(--serif);
+    font-size: 15px;
+  }
+  .empty .big{
+    font-family: var(--display);
+    font-size: 20px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  /* Calendrier */
+  .cal-item{
+    display:flex;
+    gap: 16px;
+    align-items:center;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+  }
+  .cal-date{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--navy);
+    background: var(--cream-dim);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 6px 10px;
+    min-width: 78px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .cal-date.soon{ background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight:600;}
+  .cal-info .show-name{ font-weight:600; color: var(--navy); font-family: var(--display); font-size: 16px;}
+  .cal-info .ep-label{ font-family: var(--mono); font-size: 12px; color:#6b6250; margin-top:2px;}
+
+  /* Mes séries */
+  .show-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 14px;
+    overflow:hidden;
+  }
+  .show-head{
+    display:flex;
+    gap:14px;
+    padding: 14px 16px;
+    cursor:pointer;
+    align-items:center;
+  }
+  .show-head img{
+    width:46px; height:69px; object-fit:cover; border-radius:3px; border:1px solid var(--line); background:var(--cream-dim);
+    flex-shrink:0;
+  }
+  .show-head .meta{ flex:1; min-width:0; }
+  .show-head .show-name{ font-family: var(--display); font-weight:700; font-size:17px; color:var(--navy); }
+  .show-head .status{ font-family: var(--mono); font-size:11px; color:#8a8171; text-transform:uppercase; letter-spacing:.05em;}
+  .progress-bar{
+    height:6px; background: var(--cream-dim); border-radius:3px; overflow:hidden; margin-top:6px;
+  }
+  .progress-bar > div{ height:100%; background: var(--gold); }
+  .progress-pct{ font-family: var(--mono); font-size: 12px; color: var(--navy); flex-shrink:0; }
+  .unfollow{
+    font-family: var(--mono); font-size: 11px; color:#a0483f; background:none; border:1px solid #a0483f33; border-radius:3px;
+    padding: 5px 8px; cursor:pointer; flex-shrink:0;
+  }
+  .seasons{ display:none; border-top:1px solid var(--line); padding: 10px 16px 14px; background: var(--cream); }
+  .seasons.open{ display:block; }
+  .season-block{ margin-top: 10px; }
+  .season-title{ font-family: var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em; color: var(--navy); margin-bottom:6px; display:flex; justify-content:space-between;}
+  .ep-grid{ display:flex; flex-wrap:wrap; gap:6px; }
+  .ep-dot{
+    width: 30px; height:30px; border-radius:3px; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-size: 11px; color:#8a8171; cursor:pointer; background:#fff;
+    transition: background .1s, color .1s;
+  }
+  .ep-dot.watched{ background: var(--ok); border-color: var(--ok); color:#fff; }
+
+  /* Recherche */
+  .search-box{ display:flex; gap:8px; margin-bottom: 18px; }
+  .search-box input{
+    flex:1; font-family: var(--serif); font-size:15px; padding:11px 14px;
+    border:1px solid var(--line); border-radius:4px; background:#fff;
+  }
+  .search-box button{
+    font-family: var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em;
+    background: var(--navy); color: var(--cream); border:none; border-radius:4px; padding: 0 18px; cursor:pointer;
+  }
+  .result-card{
+    display:flex; gap:14px; align-items:center; background:#fff; border:1px solid var(--line); border-radius:4px;
+    padding: 12px 16px; margin-bottom: 10px;
+  }
+  .result-card img{ width:42px; height:63px; object-fit:cover; border-radius:3px; background:var(--cream-dim); flex-shrink:0;}
+  .result-card .meta{ flex:1; min-width:0; }
+  .result-card .r-name{ font-family: var(--display); font-weight:600; font-size:15.5px; color:var(--navy); }
+  .result-card .r-date{ font-family: var(--mono); font-size:11.5px; color:#8a8171; }
+  .follow-btn{
+    font-family: var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.04em;
+    background: var(--gold); color: var(--navy); border:none; border-radius:3px; padding:7px 12px; cursor:pointer; font-weight:600;
+    flex-shrink:0;
+  }
+  .follow-btn:disabled{ background: var(--cream-dim); color:#8a8171; cursor:default; }
+
+  footer{
+    text-align:center; padding: 30px 16px 40px; font-family: var(--mono); font-size: 10.5px;
+    color:#a89f8c; letter-spacing:.04em;
+  }
+  footer a{ color:#8a8171; }
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background: var(--navy); color:var(--cream); font-family: var(--mono); font-size:12px;
+    padding:10px 18px; border-radius:4px; border:1px solid var(--gold); opacity:0; pointer-events:none;
+    transition: opacity .2s; z-index:100;
+  }
+  .toast.show{ opacity:1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Marc Vasseur · Suivi personnel</div>
+  <h1>Suivi Séries</h1>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-view="calendrier">Calendrier</button>
+  <button class="tab-btn" data-view="messeries">Mes séries</button>
+  <button class="tab-btn" data-view="recherche">Rechercher</button>
+</nav>
+
+<main>
+  <section id="view-calendrier" class="view active">
+    <div id="cal-list"><div class="empty">Chargement…</div></div>
+  </section>
+
+  <section id="view-messeries" class="view">
+    <div id="shows-list"><div class="empty">Chargement…</div></div>
+  </section>
+
+  <section id="view-recherche" class="view">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Titre d'une série…">
+      <button id="search-btn">Chercher</button>
+    </div>
+    <div id="search-results"></div>
+  </section>
+</main>
+
+<footer>
+  MARC VASSEUR · POLYTECH LILLE — marc.vasseur@polytech-lille.fr<br>
+  Données séries fournies par TMDB — usage privé
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const IMG_BASE = "https://image.tmdb.org/t/p/w154";
+let state = { shows: [] };
+let saveTimer = null;
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+// ---- Tabs ----
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    if(btn.dataset.view === 'calendrier') renderCalendrier();
+  });
+});
+
+// ---- Data load/save ----
+async function loadShows(){
+  try{
+    const r = await fetch('/api/shows');
+    if(!r.ok) throw new Error('load failed');
+    state = await r.json();
+    if(!Array.isArray(state.shows)) state.shows = [];
+  }catch(e){
+    state = { shows: [] };
+    toast("Erreur de chargement des données");
+  }
+  renderMesSeries();
+  renderCalendrier();
+}
+
+function saveShows(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    try{
+      await fetch('/api/shows', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(state)
+      });
+    }catch(e){
+      toast("Erreur d'enregistrement");
+    }
+  }, 500);
+}
+
+// ---- Recherche ----
+document.getElementById('search-btn').addEventListener('click', doSearch);
+document.getElementById('search-input').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+
+async function doSearch(){
+  const q = document.getElementById('search-input').value.trim();
+  const box = document.getElementById('search-results');
+  if(!q){ return; }
+  box.innerHTML = '<div class="empty">Recherche…</div>';
+  try{
+    const r = await fetch('/api/tmdb?action=search&query='+encodeURIComponent(q));
+    const data = await r.json();
+    if(!data.results || data.results.length===0){
+      box.innerHTML = '<div class="empty"><div class="big">Aucun résultat</div>Essaie un autre titre.</div>';
+      return;
+    }
+    box.innerHTML = '';
+    data.results.slice(0,12).forEach(show=>{
+      const already = state.shows.some(s=>s.id===show.id);
+      const div = document.createElement('div');
+      div.className = 'result-card';
+      div.innerHTML = `
+        <img src="${show.poster_path ? IMG_BASE+show.poster_path : ''}" alt="">
+        <div class="meta">
+          <div class="r-name">${escapeHtml(show.name)}</div>
+          <div class="r-date">${show.first_air_date ? show.first_air_date.slice(0,4) : 'Date inconnue'}</div>
+        </div>
+        <button class="follow-btn" ${already?'disabled':''}>${already?'Suivie':'Suivre'}</button>
+      `;
+      div.querySelector('.follow-btn').addEventListener('click', ()=> followShow(show.id, div.querySelector('.follow-btn')));
+      box.appendChild(div);
+    });
+  }catch(e){
+    box.innerHTML = '<div class="empty">Erreur de recherche</div>';
+  }
+}
+
+async function followShow(id, btnEl){
+  btnEl.disabled = true;
+  btnEl.textContent = '…';
+  try{
+    const r = await fetch('/api/tmdb?action=details&id='+id);
+    const d = await r.json();
+    const show = {
+      id: d.id,
+      name: d.name,
+      poster_path: d.poster_path,
+      status: d.status,
+      next_episode_to_air: d.next_episode_to_air || null,
+      seasons: (d.seasons||[]).filter(s=>s.season_number>0).map(s=>({
+        season_number: s.season_number,
+        name: s.name,
+        episode_count: s.episode_count
+      })),
+      watched: {}
+    };
+    state.shows.push(show);
+    saveShows();
+    renderMesSeries();
+    btnEl.textContent = 'Suivie';
+    toast(`"${d.name}" ajoutée`);
+  }catch(e){
+    btnEl.disabled = false;
+    btnEl.textContent = 'Suivre';
+    toast("Erreur lors de l'ajout");
+  }
+}
+
+function unfollowShow(id){
+  if(!confirm('Ne plus suivre cette série ? La progression sera perdue.')) return;
+  state.shows = state.shows.filter(s=>s.id!==id);
+  saveShows();
+  renderMesSeries();
+  renderCalendrier();
+}
+
+// ---- Mes séries ----
+function renderMesSeries(){
+  const box = document.getElementById('shows-list');
+  if(state.shows.length===0){
+    box.innerHTML = '<div class="empty"><div class="big">Aucune série suivie</div>Ajoute-en depuis l\'onglet Rechercher.</div>';
+    return;
+  }
+  box.innerHTML = '';
+  state.shows.forEach(show=>{
+    const total = show.seasons.reduce((a,s)=>a+s.episode_count,0);
+    const watchedCount = Object.values(show.watched||{}).reduce((a,arr)=>a+arr.length,0);
+    const pct = total>0 ? Math.round((watchedCount/total)*100) : 0;
+
+    const card = document.createElement('div');
+    card.className = 'show-card';
+    card.innerHTML = `
+      <div class="show-head">
+        <img src="${show.poster_path ? IMG_BASE+show.poster_path : ''}" alt="">
+        <div class="meta">
+          <div class="show-name">${escapeHtml(show.name)}</div>
+          <div class="status">${statusLabel(show.status)} · ${watchedCount}/${total} épisodes</div>
+          <div class="progress-bar"><div style="width:${pct}%"></div></div>
+        </div>
+        <div class="progress-pct">${pct}%</div>
+        <button class="unfollow">Retirer</button>
+      </div>
+      <div class="seasons"></div>
+    `;
+    const head = card.querySelector('.show-head');
+    const seasonsBox = card.querySelector('.seasons');
+    head.addEventListener('click', (e)=>{
+      if(e.target.classList.contains('unfollow')) return;
+      seasonsBox.classList.toggle('open');
+      if(seasonsBox.classList.contains('open') && !seasonsBox.dataset.built){
+        buildSeasons(seasonsBox, show);
+        seasonsBox.dataset.built = '1';
+      }
+    });
+    card.querySelector('.unfollow').addEventListener('click', (e)=>{ e.stopPropagation(); unfollowShow(show.id); });
+    box.appendChild(card);
+  });
+}
+
+function buildSeasons(container, show){
+  show.seasons.forEach(season=>{
+    const watchedEps = new Set((show.watched[season.season_number]||[]));
+    const block = document.createElement('div');
+    block.className = 'season-block';
+    const watchedN = watchedEps.size;
+    block.innerHTML = `<div class="season-title"><span>${escapeHtml(season.name)}</span><span>${watchedN}/${season.episode_count}</span></div>
+      <div class="ep-grid"></div>`;
+    const grid = block.querySelector('.ep-grid');
+    for(let ep=1; ep<=season.episode_count; ep++){
+      const dot = document.createElement('div');
+      dot.className = 'ep-dot' + (watchedEps.has(ep) ? ' watched' : '');
+      dot.textContent = ep;
+      dot.addEventListener('click', ()=>{
+        if(!show.watched[season.season_number]) show.watched[season.season_number] = [];
+        const arr = show.watched[season.season_number];
+        const idx = arr.indexOf(ep);
+        if(idx>=0){ arr.splice(idx,1); dot.classList.remove('watched'); }
+        else { arr.push(ep); dot.classList.add('watched'); }
+        saveShows();
+        // update header counts without full rerender
+        const total = show.seasons.reduce((a,s)=>a+s.episode_count,0);
+        const watchedCount = Object.values(show.watched).reduce((a,a2)=>a+a2.length,0);
+        renderMesSeries();
+      });
+      grid.appendChild(dot);
+    }
+    container.appendChild(block);
+  });
+}
+
+function statusLabel(s){
+  const map = { 'Returning Series':'En cours', 'Ended':'Terminée', 'Canceled':'Annulée', 'In Production':'En production' };
+  return map[s] || (s||'—');
+}
+
+// ---- Calendrier ----
+async function renderCalendrier(){
+  const box = document.getElementById('cal-list');
+  if(state.shows.length===0){
+    box.innerHTML = '<div class="empty"><div class="big">Rien à venir</div>Suis des séries pour voir leur calendrier de sortie.</div>';
+    return;
+  }
+  box.innerHTML = '<div class="empty">Chargement du calendrier…</div>';
+  try{
+    const details = await Promise.all(state.shows.map(s=>
+      fetch('/api/tmdb?action=details&id='+s.id).then(r=>r.json()).catch(()=>null)
+    ));
+    const items = [];
+    details.forEach((d, i)=>{
+      if(d && d.next_episode_to_air){
+        items.push({
+          name: state.shows[i].name,
+          date: d.next_episode_to_air.air_date,
+          season: d.next_episode_to_air.season_number,
+          episode: d.next_episode_to_air.episode_number,
+          epName: d.next_episode_to_air.name
+        });
+      }
+    });
+    items.sort((a,b)=> a.date.localeCompare(b.date));
+    if(items.length===0){
+      box.innerHTML = '<div class="empty"><div class="big">Rien de prévu</div>Aucune date de sortie connue pour tes séries suivies.</div>';
+      return;
+    }
+    const today = new Date().toISOString().slice(0,10);
+    box.innerHTML = '';
+    items.forEach(it=>{
+      const soon = it.date <= addDays(today, 7);
+      const div = document.createElement('div');
+      div.className = 'cal-item';
+      div.innerHTML = `
+        <div class="cal-date ${soon?'soon':''}">${formatDate(it.date)}</div>
+        <div class="cal-info">
+          <div class="show-name">${escapeHtml(it.name)}</div>
+          <div class="ep-label">S${it.season} E${it.episode}${it.epName ? ' — '+escapeHtml(it.epName) : ''}</div>
+        </div>
+      `;
+      box.appendChild(div);
+    });
+  }catch(e){
+    box.innerHTML = '<div class="empty">Erreur de chargement du calendrier</div>';
+  }
+}
+
+function addDays(dateStr, n){
+  const d = new Date(dateStr);
+  d.setDate(d.getDate()+n);
+  return d.toISOString().slice(0,10);
+}
+function formatDate(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+}
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str||'';
+  return div.innerHTML;
+}
+
+loadShows();
+</script>
+
+</body>
+</html>
