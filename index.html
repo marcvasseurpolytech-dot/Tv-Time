@@ -220,6 +220,19 @@ footer a{color:#8a8171;}
     <div class="search-box">
       <input type="text" id="search-input" placeholder="Titre d'une série…">
       <button id="search-btn">Chercher</button>
+      <button id="import-toggle" style="font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;background:var(--gold);color:var(--navy);border:none;border-radius:4px;padding:0 14px;cursor:pointer;font-weight:600;flex-shrink:0;">Import</button>
+    </div>
+    <div id="import-zone" style="display:none;margin-bottom:18px;">
+      <div style="background:var(--navy);color:var(--cream);border-radius:6px;padding:16px;">
+        <div style="font-family:var(--display);font-size:16px;margin-bottom:4px;">Import en masse</div>
+        <div style="font-family:var(--mono);font-size:10.5px;color:var(--gold-light);margin-bottom:10px;">Colle la liste de tes dossiers (un nom par ligne). Sur Mac : <code style="background:rgba(255,255,255,.1);padding:2px 5px;border-radius:2px;">ls -d */ | sed 's/\///'</code></div>
+        <textarea id="import-list" rows="8" style="width:100%;font-family:var(--mono);font-size:12px;padding:10px;border:1px solid var(--gold);border-radius:4px;background:rgba(255,255,255,.05);color:var(--cream);resize:vertical;" placeholder="Breaking Bad&#10;Severance&#10;The Bear&#10;Dark&#10;…"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+          <button id="import-btn" style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:8px 18px;cursor:pointer;font-weight:600;">Importer tout</button>
+          <span id="import-status" style="font-family:var(--mono);font-size:11px;color:var(--gold-light);"></span>
+        </div>
+        <div id="import-results" style="margin-top:12px;"></div>
+      </div>
     </div>
     <div id="search-results"></div>
   </section>
@@ -807,6 +820,105 @@ function addLoadMore(box,data,fn){
   more.style.cssText='display:block;margin:16px auto;padding:10px 24px;';
   more.textContent='Voir plus';more.addEventListener('click',()=>{more.remove();fn();});
   box.appendChild(more);
+}
+
+// Import en masse
+document.getElementById('import-toggle').addEventListener('click',()=>{
+  const zone=document.getElementById('import-zone');
+  zone.style.display=zone.style.display==='none'?'block':'none';
+});
+
+document.getElementById('import-btn').addEventListener('click',async()=>{
+  if(!hasCfg()){openSettings();return;}
+  const raw=document.getElementById('import-list').value.trim();
+  if(!raw){toast("Colle ta liste de séries");return;}
+  
+  // Parse lines, clean up folder names
+  const names=raw.split('\n')
+    .map(l=>l.trim())
+    .filter(l=>l.length>0)
+    .map(l=>{
+      // Clean common folder naming patterns
+      let clean=l.replace(/\/$/, ''); // trailing slash
+      clean=clean.replace(/\./g,' '); // dots to spaces
+      clean=clean.replace(/_/g,' '); // underscores to spaces
+      clean=clean.replace(/\s*\(\d{4}\)\s*$/,''); // remove (2020) year suffix
+      clean=clean.replace(/\s*\[\d{4}\]\s*$/,''); // remove [2020]
+      clean=clean.replace(/\s*(S\d{1,2}|Season\s*\d+|Saison\s*\d+).*$/i,''); // remove season info
+      return clean.trim();
+    })
+    .filter(l=>l.length>1);
+  
+  if(!names.length){toast("Aucun nom valide trouvé");return;}
+  
+  const btn=document.getElementById('import-btn');
+  const status=document.getElementById('import-status');
+  const results=document.getElementById('import-results');
+  btn.disabled=true;
+  results.innerHTML='';
+  
+  let added=0,skipped=0,notFound=0;
+  
+  for(let i=0;i<names.length;i++){
+    status.textContent=`${i+1}/${names.length} — ${esc(names[i])}…`;
+    
+    try{
+      // Check if already followed
+      const data=await tmdbGet("/search/tv?query="+encodeURIComponent(names[i]));
+      if(!data.results||!data.results.length){
+        notFound++;
+        addImportResult(results,'⚪',names[i],'Non trouvée sur TMDB');
+        continue;
+      }
+      
+      const match=data.results[0]; // Best match
+      if(state.shows.some(s=>s.id===match.id)){
+        skipped++;
+        addImportResult(results,'🔵',match.name,'Déjà suivie');
+        continue;
+      }
+      
+      // Fetch full details and add
+      const d=await tmdbGet("/tv/"+match.id);
+      const show={
+        id:d.id,name:d.name,poster_path:d.poster_path,status:d.status,
+        first_air_date:d.first_air_date||'',
+        networks:(d.networks||[]).map(n=>n.name).join(", "),
+        genres:(d.genres||[]).map(g=>g.name),genre_ids:(d.genres||[]).map(g=>g.id),
+        runtime:(d.episode_run_time&&d.episode_run_time.length)?d.episode_run_time[0]:(d.last_episode_to_air&&d.last_episode_to_air.runtime?d.last_episode_to_air.runtime:45),
+        seasons:(d.seasons||[]).filter(s=>s.season_number>0).map(s=>({season_number:s.season_number,name:s.name,episode_count:s.episode_count})),
+        watched:{}
+      };
+      if(d.next_episode_to_air)nextEpisodes[show.id]=d.next_episode_to_air;
+      state.shows.push(show);
+      added++;
+      addImportResult(results,'🟢',match.name,'Ajoutée ✓');
+      
+      // Small delay to avoid TMDB rate limiting
+      if(i<names.length-1) await new Promise(r=>setTimeout(r,300));
+      
+    }catch(e){
+      notFound++;
+      addImportResult(results,'🔴',names[i],'Erreur: '+e.message);
+    }
+  }
+  
+  // Save all at once
+  saveToGist();
+  renderMesSeries();
+  renderAlerts();
+  pourVousLoaded=false; // reset recommendations
+  
+  status.textContent=`Terminé — ${added} ajoutée${added>1?'s':''}, ${skipped} déjà suivie${skipped>1?'s':''}, ${notFound} non trouvée${notFound>1?'s':''}`;
+  btn.disabled=false;
+  toast(`${added} série${added>1?'s':''} importée${added>1?'s':''}`);
+});
+
+function addImportResult(container,icon,name,status){
+  const div=document.createElement('div');
+  div.style.cssText='display:flex;gap:8px;align-items:center;padding:4px 0;font-family:var(--mono);font-size:11px;color:var(--cream);border-bottom:1px solid rgba(255,255,255,.1);';
+  div.innerHTML=`<span>${icon}</span><span style="flex:1;">${esc(name)}</span><span style="opacity:.6;">${esc(status)}</span>`;
+  container.appendChild(div);
 }
 
 // Helpers
