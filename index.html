@@ -23,8 +23,9 @@ header .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;te
 header h1{font-family:var(--display);font-weight:800;font-size:26px;}
 header .gear{position:absolute;top:24px;right:20px;background:none;border:none;color:var(--gold-light);font-size:22px;cursor:pointer;}
 
-nav.tabs{display:flex;gap:2px;max-width:900px;margin:0 auto;padding:0 12px;position:sticky;top:0;background:var(--cream);z-index:10;border-bottom:1px solid var(--line);}
-nav.tabs button{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;padding:13px 14px;color:#6b6250;cursor:pointer;border-bottom:2px solid transparent;transition:.15s;}
+nav.tabs{display:flex;gap:0;max-width:900px;margin:0 auto;padding:0;position:sticky;top:0;background:var(--cream);z-index:10;border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+nav.tabs::-webkit-scrollbar{display:none;}
+nav.tabs button{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;background:none;border:none;padding:12px 12px;color:#6b6250;cursor:pointer;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;flex-shrink:0;}
 nav.tabs button.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:600;}
 
 main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
@@ -37,11 +38,12 @@ main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
 .empty{text-align:center;padding:50px 20px;color:#8a8171;font-size:14.5px;}
 .empty .big{font-family:var(--display);font-size:19px;color:var(--navy);margin-bottom:6px;}
 
-/* Sort bar */
-.sort-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
-.sort-bar .sort-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8a8171;margin-right:4px;}
-.sort-btn{font-family:var(--mono);font-size:10.5px;background:#fff;border:1px solid var(--line);border-radius:3px;padding:5px 10px;cursor:pointer;color:#6b6250;transition:.15s;}
-.sort-btn.active{background:var(--navy);color:var(--cream);border-color:var(--navy);}
+/* Sort & filter bars */
+.sort-bar,.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.sort-bar .sort-label,.filter-bar .filter-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8a8171;margin-right:4px;}
+.sort-btn,.filter-btn{font-family:var(--mono);font-size:10.5px;background:#fff;border:1px solid var(--line);border-radius:3px;padding:5px 10px;cursor:pointer;color:#6b6250;transition:.15s;}
+.sort-btn.active,.filter-btn.active{background:var(--navy);color:var(--cream);border-color:var(--navy);}
+.filter-btn .plat-icon{margin-right:3px;}
 
 /* Calendrier */
 .cal-item{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:4px;padding:11px 14px;margin-bottom:9px;}
@@ -70,7 +72,6 @@ main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
 .mark-all{font-size:10px;color:var(--gold);cursor:pointer;border:1px solid var(--line);border-radius:3px;padding:2px 7px;background:none;font-family:var(--mono);}
 .ep-grid{display:flex;flex-wrap:wrap;gap:5px;}
 
-/* Episode dots - prettier version */
 .ep-dot{
   width:30px;height:30px;border-radius:50%;
   border:2px solid var(--cream-dim);
@@ -78,28 +79,18 @@ main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
   font-family:var(--mono);font-size:10px;color:#8a8171;
   cursor:pointer;background:#fff;
   transition: all .25s cubic-bezier(.4,0,.2,1);
-  position:relative;
 }
 .ep-dot:hover{border-color:var(--gold);color:var(--navy);transform:scale(1.1);}
 .ep-dot.watched{
   background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  border-color:var(--gold);
-  color:var(--navy);
-  font-weight:600;
+  border-color:var(--gold);color:var(--navy);font-weight:600;
   box-shadow:0 2px 8px rgba(201,160,77,.35);
-  transform:scale(1);
 }
 .ep-dot.watched:hover{transform:scale(1.1);box-shadow:0 3px 12px rgba(201,160,77,.45);}
-.ep-dot.just-watched{
-  animation: popIn .35s cubic-bezier(.175,.885,.32,1.275);
-}
-@keyframes popIn{
-  0%{transform:scale(.5);opacity:.5;}
-  60%{transform:scale(1.2);}
-  100%{transform:scale(1);opacity:1;}
-}
+.ep-dot.just-watched{animation:popIn .35s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes popIn{0%{transform:scale(.5);opacity:.5;}60%{transform:scale(1.2);}100%{transform:scale(1);opacity:1;}}
 
-/* Search */
+/* Search & results */
 .search-box{display:flex;gap:8px;margin-bottom:16px;}
 .search-box input{flex:1;font-family:var(--serif);font-size:14.5px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:#fff;}
 .search-box button{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:var(--cream);border:none;border-radius:4px;padding:0 16px;cursor:pointer;}
@@ -111,7 +102,7 @@ main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
 .follow-btn{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:6px 11px;cursor:pointer;font-weight:600;flex-shrink:0;}
 .follow-btn:disabled{background:var(--cream-dim);color:#8a8171;cursor:default;}
 
-/* Discover */
+/* Discover & Nouveautés cards */
 .disco-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
 .disco-btn{font-family:var(--mono);font-size:11px;letter-spacing:.03em;background:#fff;border:1px solid var(--line);border-radius:3px;padding:8px 14px;cursor:pointer;color:#6b6250;transition:.15s;}
 .disco-btn.active{background:var(--navy);color:var(--cream);border-color:var(--navy);}
@@ -123,6 +114,8 @@ main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
 .disco-card .d-overview{font-size:13px;color:var(--ink);margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .disco-card .d-rating{font-family:var(--mono);font-size:11px;color:var(--gold);margin-top:4px;}
 .disco-card .d-right{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;justify-content:center;}
+/* "because you watch X" label */
+.reco-because{font-family:var(--mono);font-size:10px;color:var(--gold);margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--line);}
 
 /* Settings modal */
 .modal-bg{position:fixed;inset:0;background:rgba(13,27,46,.6);z-index:50;display:none;align-items:center;justify-content:center;}
@@ -157,8 +150,10 @@ footer a{color:#8a8171;}
 <nav class="tabs">
   <button class="tab-btn active" data-view="calendrier">Calendrier</button>
   <button class="tab-btn" data-view="messeries">Mes séries</button>
-  <button class="tab-btn" data-view="recherche">Rechercher</button>
+  <button class="tab-btn" data-view="nouveautes">Nouveautés</button>
+  <button class="tab-btn" data-view="pourvous">Pour vous</button>
   <button class="tab-btn" data-view="decouvrir">Découvrir</button>
+  <button class="tab-btn" data-view="recherche">Rechercher</button>
 </nav>
 
 <main>
@@ -178,12 +173,15 @@ footer a{color:#8a8171;}
     <div id="shows-list"><div class="empty">Chargement…</div></div>
   </section>
 
-  <section id="view-recherche" class="view">
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="Titre d'une série…">
-      <button id="search-btn">Chercher</button>
+  <section id="view-nouveautes" class="view">
+    <div class="filter-bar" id="platform-bar">
+      <span class="filter-label">Plateforme :</span>
     </div>
-    <div id="search-results"></div>
+    <div id="nouveautes-results"></div>
+  </section>
+
+  <section id="view-pourvous" class="view">
+    <div id="pourvous-results"></div>
   </section>
 
   <section id="view-decouvrir" class="view">
@@ -194,6 +192,14 @@ footer a{color:#8a8171;}
       <button class="disco-btn" data-cat="on_the_air">📺 En ce moment</button>
     </div>
     <div id="disco-results"></div>
+  </section>
+
+  <section id="view-recherche" class="view">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Titre d'une série…">
+      <button id="search-btn">Chercher</button>
+    </div>
+    <div id="search-results"></div>
   </section>
 </main>
 
@@ -225,6 +231,18 @@ const IMG = "https://image.tmdb.org/t/p/w154";
 const TMDB = "https://api.themoviedb.org/3";
 const GIST_FILE = "tv-time-data.json";
 
+// Streaming platforms (TMDB watch provider IDs for FR)
+const PLATFORMS = [
+  {id:8,   name:"Netflix",     icon:"🔴"},
+  {id:337, name:"Disney+",     icon:"🏰"},
+  {id:119, name:"Amazon",      icon:"📦"},
+  {id:350, name:"Apple TV+",   icon:"🍎"},
+  {id:531, name:"Paramount+",  icon:"⛰️"},
+  {id:56,  name:"OCS / Max",   icon:"🟣"},
+  {id:381, name:"Canal+",      icon:"🔲"},
+  {id:62,  name:"Crunchyroll",  icon:"🍥"},
+];
+
 // ---- Config ----
 function cfg(k,v){ if(v!==undefined){ localStorage.setItem("tvt_"+k,v); return v; } return localStorage.getItem("tvt_"+k)||""; }
 function hasCfg(){ return cfg("tmdb") && cfg("token"); }
@@ -245,14 +263,14 @@ async function saveSettings(){
 function updateBanner(){
   const el = document.getElementById("setup-banner");
   if(hasCfg()){ el.innerHTML=""; return; }
-  el.innerHTML = `<div class="setup-banner"><b>Bienvenue !</b> Pour commencer, configure ta clé TMDB et ton token GitHub.<br>Ça prend 2 minutes et c'est une seule fois.<br><button onclick="openSettings()">Configurer</button></div>`;
+  el.innerHTML = `<div class="setup-banner"><b>Bienvenue !</b> Configure ta clé TMDB et ton token GitHub pour commencer.<br>Ça prend 2 minutes, une seule fois.<br><button onclick="openSettings()">Configurer</button></div>`;
 }
 
 // ---- Data (Gist sync) ----
 let state = { shows:[] };
 let gistId = "";
 let saveTimer = null;
-let nextEpisodes = {}; // cache TMDB next_episode data per show id
+let nextEpisodes = {};
 
 async function initData(){
   if(!hasCfg()) return;
@@ -284,7 +302,6 @@ async function findOrCreateGist(){
     toast("Erreur création Gist"); return "";
   }catch(e){ toast("Erreur GitHub: "+e.message); return ""; }
 }
-
 function ghHeaders(){ return { Authorization:"token "+cfg("token"), Accept:"application/vnd.github+json", "Content-Type":"application/json" }; }
 
 async function loadFromGist(){
@@ -309,32 +326,24 @@ function saveToGist(){
   },600);
 }
 
-// ---- Fetch next episodes for all shows ----
 async function fetchNextEpisodes(){
   if(!hasCfg()||!state.shows.length) return;
   const results = await Promise.all(state.shows.map(s=>tmdbGet("/tv/"+s.id).catch(()=>null)));
   results.forEach((d,i)=>{
     if(!d) return;
     const show = state.shows[i];
-    // store first air date for year sort
     if(d.first_air_date && !show.first_air_date) show.first_air_date = d.first_air_date;
-    // store next episode info
-    if(d.next_episode_to_air){
-      nextEpisodes[show.id] = d.next_episode_to_air;
-    }
-    // update status & networks
+    if(d.next_episode_to_air) nextEpisodes[show.id] = d.next_episode_to_air;
     show.status = d.status;
     show.networks = (d.networks||[]).map(n=>n.name).join(", ");
-    // update season info
-    const newSeasons = (d.seasons||[]).filter(s=>s.season_number>0).map(s=>({
+    const ns = (d.seasons||[]).filter(s=>s.season_number>0).map(s=>({
       season_number:s.season_number, name:s.name, episode_count:s.episode_count
     }));
-    if(newSeasons.length) show.seasons = newSeasons;
+    if(ns.length) show.seasons = ns;
   });
   saveToGist();
 }
 
-// ---- TMDB ----
 async function tmdbGet(path){
   const sep = path.includes("?") ? "&" : "?";
   const r = await fetch(TMDB+path+sep+"api_key="+cfg("tmdb")+"&language=fr-FR");
@@ -352,8 +361,10 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if(btn.dataset.view==='calendrier') renderCalendrier();
     if(btn.dataset.view==='decouvrir'){
       const box = document.getElementById('disco-results');
-      if(!box.children.length || box.querySelector('.empty')) loadDisco(activeDiscoCat());
+      if(!box.children.length||box.querySelector('.empty')) loadDisco(activeDiscoCat());
     }
+    if(btn.dataset.view==='nouveautes') initNouveautes();
+    if(btn.dataset.view==='pourvous') loadPourVous();
   });
 });
 
@@ -367,12 +378,10 @@ document.querySelectorAll('.sort-btn').forEach(btn=>{
     renderMesSeries();
   });
 });
-
 function getSortedShows(){
   const shows = [...state.shows];
   if(currentSort==='alpha') shows.sort((a,b)=>(a.name||'').localeCompare(b.name||'','fr'));
   else if(currentSort==='year') shows.sort((a,b)=>(b.first_air_date||'0').localeCompare(a.first_air_date||'0'));
-  // 'added' = original order (most recent last → reverse for most recent first)
   else shows.reverse();
   return shows;
 }
@@ -390,23 +399,11 @@ async function doSearch(){
   try{
     const data = await tmdbGet("/search/tv?query="+encodeURIComponent(q));
     if(!data.results||!data.results.length){
-      box.innerHTML = '<div class="empty"><div class="big">Aucun résultat</div>Essaie un autre titre.</div>';
-      return;
+      box.innerHTML = '<div class="empty"><div class="big">Aucun résultat</div></div>'; return;
     }
     box.innerHTML = '';
     data.results.slice(0,12).forEach(show=>{
-      const already = state.shows.some(s=>s.id===show.id);
-      const div = document.createElement('div');
-      div.className = 'result-card';
-      div.innerHTML = `
-        <img src="${show.poster_path?IMG+show.poster_path:''}" alt="">
-        <div class="meta">
-          <div class="r-name">${esc(show.name)}</div>
-          <div class="r-sub">${show.first_air_date?show.first_air_date.slice(0,4):'?'}</div>
-        </div>
-        <button class="follow-btn" ${already?'disabled':''}>${already?'Suivie':'Suivre'}</button>`;
-      div.querySelector('.follow-btn').addEventListener('click',()=>followShow(show.id,div.querySelector('.follow-btn')));
-      box.appendChild(div);
+      box.appendChild(makeResultCard(show));
     });
   }catch(e){ box.innerHTML = '<div class="empty">Erreur de recherche</div>'; }
 }
@@ -432,6 +429,30 @@ async function followShow(id,btn){
   }catch(e){ btn.disabled=false; btn.textContent='Suivre'; toast("Erreur"); }
 }
 
+// Shared card builder
+function makeResultCard(show, extraHtml){
+  const already = state.shows.some(s=>s.id===show.id);
+  const div = document.createElement('div');
+  div.className = 'disco-card';
+  const year = show.first_air_date?show.first_air_date.slice(0,4):'?';
+  const rating = show.vote_average?show.vote_average.toFixed(1):'—';
+  const stars = show.vote_average?'★'.repeat(Math.round(show.vote_average/2)):'';
+  div.innerHTML = `
+    ${extraHtml||''}
+    <img src="${show.poster_path?IMG+show.poster_path:''}" alt="">
+    <div class="meta">
+      <div class="d-name">${esc(show.name)}</div>
+      <div class="d-sub">${year}${show.origin_country&&show.origin_country.length?' · '+show.origin_country.join(', '):''}</div>
+      <div class="d-overview">${esc(show.overview)}</div>
+      <div class="d-rating">${stars} ${rating}/10</div>
+    </div>
+    <div class="d-right">
+      <button class="follow-btn" ${already?'disabled':''}>${already?'Suivie':'Suivre'}</button>
+    </div>`;
+  div.querySelector('.follow-btn').addEventListener('click',()=>followShow(show.id,div.querySelector('.follow-btn')));
+  return div;
+}
+
 // ---- Mes séries ----
 function renderMesSeries(){
   const box = document.getElementById('shows-list');
@@ -439,24 +460,19 @@ function renderMesSeries(){
     box.innerHTML = '<div class="empty"><div class="big">Aucune série suivie</div>Ajoute-en depuis l\'onglet Rechercher.</div>';
     return;
   }
-  // Remember which cards are open
   const openIds = new Set();
   box.querySelectorAll('.show-card').forEach(card=>{
     if(card.querySelector('.seasons.open')) openIds.add(card.dataset.showId);
   });
-
   box.innerHTML = '';
-  const sorted = getSortedShows();
-  sorted.forEach(show=>{
+  getSortedShows().forEach(show=>{
     const total = show.seasons.reduce((a,s)=>a+s.episode_count,0);
     const wCount = Object.values(show.watched||{}).reduce((a,arr)=>a+arr.length,0);
     const pct = total>0 ? Math.round(wCount/total*100) : 0;
     const ne = nextEpisodes[show.id];
     const nextStr = ne ? `Prochain : S${ne.season_number}E${ne.episode_number} — ${fmtDate(ne.air_date)}` : '';
-
     const card = document.createElement('div');
-    card.className = 'show-card';
-    card.dataset.showId = show.id;
+    card.className = 'show-card'; card.dataset.showId = show.id;
     card.innerHTML = `
       <div class="show-head">
         <img src="${show.poster_path?IMG+show.poster_path:''}" alt="">
@@ -470,27 +486,18 @@ function renderMesSeries(){
         <button class="btn-remove">✕</button>
       </div>
       <div class="seasons${openIds.has(String(show.id))?' open':''}"></div>`;
-
-    const head = card.querySelector('.show-head');
     const seasonsBox = card.querySelector('.seasons');
-
-    // If was open, rebuild immediately
-    if(openIds.has(String(show.id))){
-      buildSeasons(seasonsBox, show);
-      seasonsBox.dataset.built='1';
-    }
-
-    head.addEventListener('click',e=>{
+    if(openIds.has(String(show.id))){ buildSeasons(seasonsBox,show); seasonsBox.dataset.built='1'; }
+    card.querySelector('.show-head').addEventListener('click',e=>{
       if(e.target.classList.contains('btn-remove')) return;
       seasonsBox.classList.toggle('open');
       if(seasonsBox.classList.contains('open')&&!seasonsBox.dataset.built){
-        buildSeasons(seasonsBox,show);
-        seasonsBox.dataset.built='1';
+        buildSeasons(seasonsBox,show); seasonsBox.dataset.built='1';
       }
     });
     card.querySelector('.btn-remove').addEventListener('click',e=>{
       e.stopPropagation();
-      if(confirm('Retirer "'+show.name+'" ? La progression sera perdue.')){
+      if(confirm('Retirer "'+show.name+'" ?')){
         state.shows = state.shows.filter(s=>s.id!==show.id);
         saveToGist(); renderMesSeries(); renderCalendrier();
       }
@@ -512,42 +519,25 @@ function buildSeasons(container,show){
       const dot = document.createElement('div');
       dot.className = 'ep-dot'+(watched.has(ep)?' watched':'');
       dot.textContent = ep;
-      dot.addEventListener('click',(e)=>{
+      dot.addEventListener('click',e=>{
         e.stopPropagation();
         if(!show.watched[season.season_number]) show.watched[season.season_number]=[];
         const arr = show.watched[season.season_number];
         const idx = arr.indexOf(ep);
-        if(idx>=0){
-          arr.splice(idx,1);
-          dot.classList.remove('watched');
-        } else {
-          arr.push(ep);
-          dot.classList.add('watched','just-watched');
-          setTimeout(()=>dot.classList.remove('just-watched'),400);
-        }
-        saveToGist();
-        updateSeasonHdr(block,season,show);
-        updateCardHeaderInPlace(show);
+        if(idx>=0){ arr.splice(idx,1); dot.classList.remove('watched'); }
+        else{ arr.push(ep); dot.classList.add('watched','just-watched'); setTimeout(()=>dot.classList.remove('just-watched'),400); }
+        saveToGist(); updateSeasonHdr(block,season,show); updateCardHeaderInPlace(show);
       });
-      dots.push(dot);
-      grid.appendChild(dot);
+      dots.push(dot); grid.appendChild(dot);
     }
-    block.querySelector('.mark-all').addEventListener('click',(e)=>{
+    block.querySelector('.mark-all').addEventListener('click',e=>{
       e.stopPropagation();
-      const allWatched = (show.watched[season.season_number]||[]).length===season.episode_count;
-      if(allWatched){
-        show.watched[season.season_number]=[];
-        dots.forEach(d=>d.classList.remove('watched'));
-      } else {
-        show.watched[season.season_number]=[...Array(season.episode_count)].map((_,i)=>i+1);
-        dots.forEach((d,i)=>{
-          d.classList.add('watched','just-watched');
-          setTimeout(()=>d.classList.remove('just-watched'), 50+i*30);
-        });
+      const allW = (show.watched[season.season_number]||[]).length===season.episode_count;
+      if(allW){ show.watched[season.season_number]=[]; dots.forEach(d=>d.classList.remove('watched')); }
+      else{ show.watched[season.season_number]=[...Array(season.episode_count)].map((_,i)=>i+1);
+        dots.forEach((d,i)=>{ d.classList.add('watched','just-watched'); setTimeout(()=>d.classList.remove('just-watched'),50+i*30); });
       }
-      saveToGist();
-      updateSeasonHdr(block,season,show);
-      updateCardHeaderInPlace(show);
+      saveToGist(); updateSeasonHdr(block,season,show); updateCardHeaderInPlace(show);
     });
     container.appendChild(block);
   });
@@ -558,8 +548,6 @@ function updateSeasonHdr(block,season,show){
   block.querySelector('.season-hdr span').textContent = season.name+' — '+w+'/'+season.episode_count;
   block.querySelector('.mark-all').textContent = w===season.episode_count?'Tout décocher':'Tout cocher';
 }
-
-// Update progress bar & count WITHOUT re-rendering (keeps dropdown open)
 function updateCardHeaderInPlace(show){
   const card = document.querySelector(`.show-card[data-show-id="${show.id}"]`);
   if(!card) return;
@@ -568,13 +556,10 @@ function updateCardHeaderInPlace(show){
   const pct = total>0 ? Math.round(wCount/total*100) : 0;
   card.querySelector('.progress-bar > div').style.width = pct+'%';
   card.querySelector('.progress-pct').textContent = pct+'%';
-  const statusEl = card.querySelector('.status');
-  statusEl.textContent = statusLabel(show.status)+' · '+wCount+'/'+total+' ép.'+(show.networks?' · '+show.networks:'');
+  card.querySelector('.status').textContent = statusLabel(show.status)+' · '+wCount+'/'+total+' ép.'+(show.networks?' · '+show.networks:'');
 }
-
 function statusLabel(s){
-  const m={'Returning Series':'En cours','Ended':'Terminée','Canceled':'Annulée','In Production':'En production','Planned':'Prévue'};
-  return m[s]||(s||'—');
+  return {'Returning Series':'En cours','Ended':'Terminée','Canceled':'Annulée','In Production':'En production','Planned':'Prévue'}[s]||(s||'—');
 }
 
 // ---- Calendrier ----
@@ -584,18 +569,11 @@ async function renderCalendrier(){
   if(!state.shows.length){ box.innerHTML='<div class="empty"><div class="big">Rien à venir</div>Suis des séries pour voir leur calendrier.</div>'; return; }
   box.innerHTML='<div class="empty">Chargement du calendrier…</div>';
   try{
-    // Use cached nextEpisodes if available, otherwise fetch
     if(!Object.keys(nextEpisodes).length) await fetchNextEpisodes();
     const items = [];
     state.shows.forEach(show=>{
       const ne = nextEpisodes[show.id];
-      if(ne){
-        items.push({
-          name:show.name, date:ne.air_date,
-          season:ne.season_number, episode:ne.episode_number, epName:ne.name,
-          network:show.networks||''
-        });
-      }
+      if(ne) items.push({ name:show.name, date:ne.air_date, season:ne.season_number, episode:ne.episode_number, epName:ne.name, network:show.networks||'' });
     });
     items.sort((a,b)=>a.date.localeCompare(b.date));
     if(!items.length){ box.innerHTML='<div class="empty"><div class="big">Rien de prévu</div>Aucune date de sortie connue.</div>'; return; }
@@ -603,18 +581,126 @@ async function renderCalendrier(){
     box.innerHTML='';
     items.forEach(it=>{
       const soon = it.date<=addDays(today,7);
-      const div = document.createElement('div');
-      div.className='cal-item';
-      div.innerHTML=`
-        <div class="cal-date ${soon?'soon':''}">${fmtDate(it.date)}</div>
-        <div class="cal-info">
-          <div class="show-name">${esc(it.name)}</div>
-          <div class="ep-label">S${it.season} E${it.episode}${it.epName?' — '+esc(it.epName):''}</div>
-        </div>
+      const div = document.createElement('div'); div.className='cal-item';
+      div.innerHTML=`<div class="cal-date ${soon?'soon':''}">${fmtDate(it.date)}</div>
+        <div class="cal-info"><div class="show-name">${esc(it.name)}</div>
+        <div class="ep-label">S${it.season} E${it.episode}${it.epName?' — '+esc(it.epName):''}</div></div>
         ${it.network?'<div class="cal-platform">'+esc(it.network)+'</div>':''}`;
       box.appendChild(div);
     });
   }catch(e){ box.innerHTML='<div class="empty">Erreur de chargement</div>'; }
+}
+
+// ---- Nouveautés (par plateforme) ----
+let nouveautesInit = false;
+let currentPlatform = PLATFORMS[0].id;
+
+function initNouveautes(){
+  if(nouveautesInit) return;
+  nouveautesInit = true;
+  const bar = document.getElementById('platform-bar');
+  PLATFORMS.forEach((p,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn'+(i===0?' active':'');
+    btn.dataset.pid = p.id;
+    btn.innerHTML = `<span class="plat-icon">${p.icon}</span>${p.name}`;
+    btn.addEventListener('click',()=>{
+      bar.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentPlatform = p.id;
+      loadNouveautes(p.id);
+    });
+    bar.appendChild(btn);
+  });
+  loadNouveautes(currentPlatform);
+}
+
+async function loadNouveautes(providerId, page){
+  if(!hasCfg()){ openSettings(); return; }
+  const box = document.getElementById('nouveautes-results');
+  page = page || 1;
+  if(page===1) box.innerHTML='<div class="empty">Chargement…</div>';
+  try{
+    const today = new Date().toISOString().slice(0,10);
+    const monthAgo = addDays(today,-60);
+    const data = await tmdbGet(`/discover/tv?with_watch_providers=${providerId}&watch_region=FR&sort_by=first_air_date.desc&first_air_date.lte=${today}&first_air_date.gte=${monthAgo}&page=${page}`);
+    if(!data.results||!data.results.length){
+      if(page===1) box.innerHTML='<div class="empty"><div class="big">Rien de récent</div>Pas de nouvelles séries ces 60 derniers jours sur cette plateforme.</div>';
+      return;
+    }
+    if(page===1) box.innerHTML='';
+    data.results.forEach(show=>{ box.appendChild(makeResultCard(show)); });
+    // Load more
+    const existing = box.querySelector('.load-more');
+    if(existing) existing.remove();
+    if(data.page<data.total_pages && data.page<5){
+      const more = document.createElement('button');
+      more.className='follow-btn load-more';
+      more.style.cssText='display:block;margin:16px auto;padding:10px 24px;';
+      more.textContent='Voir plus';
+      more.addEventListener('click',()=>{ more.remove(); loadNouveautes(providerId, page+1); });
+      box.appendChild(more);
+    }
+  }catch(e){ if(page===1) box.innerHTML='<div class="empty">Erreur de chargement</div>'; }
+}
+
+// ---- Pour vous (recommandations basées sur vos séries) ----
+let pourVousLoaded = false;
+
+async function loadPourVous(){
+  if(!hasCfg()){ openSettings(); return; }
+  const box = document.getElementById('pourvous-results');
+  if(!state.shows.length){
+    box.innerHTML='<div class="empty"><div class="big">Suis des séries d\'abord</div>Les recommandations sont basées sur les séries que tu suis.</div>';
+    return;
+  }
+  if(pourVousLoaded) return;
+  pourVousLoaded = true;
+  box.innerHTML='<div class="empty">Analyse de tes goûts…</div>';
+  try{
+    // Pick up to 8 random shows from followed list for variety
+    const picks = [...state.shows].sort(()=>Math.random()-.5).slice(0,8);
+    const allRecos = [];
+    const seenIds = new Set(state.shows.map(s=>s.id));
+
+    const results = await Promise.all(picks.map(s=>
+      tmdbGet("/tv/"+s.id+"/recommendations?page=1").catch(()=>({results:[]}))
+    ));
+
+    results.forEach((data,i)=>{
+      if(!data.results) return;
+      data.results.slice(0,6).forEach(reco=>{
+        if(seenIds.has(reco.id)) return;
+        // Check if already in allRecos
+        const existing = allRecos.find(r=>r.show.id===reco.id);
+        if(existing){
+          existing.sources.push(picks[i].name);
+          existing.score += (reco.vote_average||0);
+        } else {
+          allRecos.push({ show:reco, sources:[picks[i].name], score:reco.vote_average||0 });
+          seenIds.add(reco.id);
+        }
+      });
+    });
+
+    // Sort: shows recommended by multiple sources first, then by score
+    allRecos.sort((a,b)=>(b.sources.length - a.sources.length) || (b.score - a.score));
+
+    if(!allRecos.length){
+      box.innerHTML='<div class="empty"><div class="big">Pas assez de données</div>Ajoute plus de séries pour de meilleures recommandations.</div>';
+      return;
+    }
+
+    box.innerHTML='';
+    allRecos.slice(0,30).forEach(reco=>{
+      const becauseText = reco.sources.length > 1
+        ? `Parce que tu suis ${reco.sources.slice(0,-1).join(', ')} et ${reco.sources[reco.sources.length-1]}`
+        : `Parce que tu suis ${reco.sources[0]}`;
+      const card = makeResultCard(reco.show, `<div class="reco-because" style="width:100%;flex-basis:100%;">${esc(becauseText)}</div>`);
+      card.style.flexWrap = 'wrap';
+      box.appendChild(card);
+    });
+  }catch(e){ box.innerHTML='<div class="empty">Erreur de chargement des recommandations</div>'; }
 }
 
 // ---- Découvrir ----
@@ -628,8 +714,8 @@ document.querySelectorAll('.disco-btn').forEach(btn=>{
   });
 });
 function activeDiscoCat(){
-  const active = document.querySelector('.disco-btn.active');
-  return active ? active.dataset.cat : 'trending';
+  const a = document.querySelector('.disco-btn.active');
+  return a ? a.dataset.cat : 'trending';
 }
 async function loadDisco(cat,append){
   if(!hasCfg()){ openSettings(); return; }
@@ -637,48 +723,22 @@ async function loadDisco(cat,append){
   if(!append){ box.innerHTML='<div class="empty">Chargement…</div>'; discoPage[cat]=1; }
   const page = discoPage[cat]||1;
   try{
-    let path;
-    if(cat==='trending') path="/trending/tv/week?page="+page;
-    else path="/tv/"+cat+"?page="+page;
+    const path = cat==='trending' ? "/trending/tv/week?page="+page : "/tv/"+cat+"?page="+page;
     const data = await tmdbGet(path);
     if(!data.results||!data.results.length){
       if(!append) box.innerHTML='<div class="empty"><div class="big">Rien trouvé</div></div>';
       return;
     }
     if(!append) box.innerHTML='';
-    data.results.forEach(show=>{
-      const already = state.shows.some(s=>s.id===show.id);
-      const year = show.first_air_date?show.first_air_date.slice(0,4):'?';
-      const rating = show.vote_average?show.vote_average.toFixed(1):'—';
-      const stars = show.vote_average?'★'.repeat(Math.round(show.vote_average/2)):'';
-      const div = document.createElement('div');
-      div.className='disco-card';
-      div.innerHTML=`
-        <img src="${show.poster_path?IMG+show.poster_path:''}" alt="">
-        <div class="meta">
-          <div class="d-name">${esc(show.name)}</div>
-          <div class="d-sub">${year}${show.origin_country&&show.origin_country.length?' · '+show.origin_country.join(', '):''}</div>
-          <div class="d-overview">${esc(show.overview)}</div>
-          <div class="d-rating">${stars} ${rating}/10</div>
-        </div>
-        <div class="d-right">
-          <button class="follow-btn" ${already?'disabled':''}>${already?'Suivie':'Suivre'}</button>
-        </div>`;
-      div.querySelector('.follow-btn').addEventListener('click',()=>followShow(show.id,div.querySelector('.follow-btn')));
-      box.appendChild(div);
-    });
+    data.results.forEach(show=>{ box.appendChild(makeResultCard(show)); });
+    const existing = box.querySelector('.load-more');
+    if(existing) existing.remove();
     if(data.page<data.total_pages){
-      const existing = box.querySelector('.load-more');
-      if(existing) existing.remove();
       const more = document.createElement('button');
       more.className='follow-btn load-more';
       more.style.cssText='display:block;margin:16px auto;padding:10px 24px;';
       more.textContent='Voir plus';
-      more.addEventListener('click',()=>{
-        discoPage[cat]=(discoPage[cat]||1)+1;
-        more.remove();
-        loadDisco(cat,true);
-      });
+      more.addEventListener('click',()=>{ discoPage[cat]=(discoPage[cat]||1)+1; more.remove(); loadDisco(cat,true); });
       box.appendChild(more);
     }
   }catch(e){ if(!append) box.innerHTML='<div class="empty">Erreur de chargement</div>'; }
