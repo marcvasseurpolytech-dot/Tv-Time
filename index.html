@@ -223,9 +223,11 @@ async function findOrCreateGist(){
   try{
     // Search existing gists for our file
     const r = await fetch("https://api.github.com/gists?per_page=100",{headers:ghHeaders()});
+    if(!r.ok){ toast("Token GitHub invalide ou expiré ("+r.status+")"); return ""; }
     const gists = await r.json();
+    if(!Array.isArray(gists)){ toast("Réponse GitHub inattendue — vérifie ton token"); return ""; }
     for(const g of gists){
-      if(g.files[GIST_FILE]) return g.id;
+      if(g.files && g.files[GIST_FILE]) return g.id;
     }
     // Create new gist
     const cr = await fetch("https://api.github.com/gists",{
