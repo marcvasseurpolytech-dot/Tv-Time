@@ -3,221 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suivi Séries — Marc Vasseur</title>
+<title>Tv Time — Marc Vasseur</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Serif+4:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --navy:#0d1b2e;
-    --navy-2:#16283f;
-    --gold:#c9a04d;
-    --gold-light:#e2c789;
-    --cream:#f6f2e8;
-    --cream-dim:#ece4d2;
-    --ink:#1b2432;
-    --line: rgba(201,160,77,0.25);
-    --ok:#4a7c59;
-    --serif: 'Source Serif 4', Georgia, serif;
-    --display: 'Playfair Display', Georgia, serif;
-    --mono: 'JetBrains Mono', monospace;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background: var(--cream);
-    color: var(--ink);
-    font-family: var(--serif);
-    min-height:100vh;
-  }
-  header{
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
-    color: var(--cream);
-    padding: 28px 24px 22px;
-    border-bottom: 3px solid var(--gold);
-  }
-  header .eyebrow{
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gold-light);
-    margin-bottom: 6px;
-  }
-  header h1{
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 30px;
-    margin: 0;
-    letter-spacing: 0.01em;
-  }
-  nav.tabs{
-    display:flex;
-    gap: 4px;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 16px;
-    position: sticky;
-    top: 0;
-    background: var(--cream);
-    z-index: 10;
-    border-bottom: 1px solid var(--line);
-  }
-  nav.tabs button{
-    font-family: var(--mono);
-    font-size: 12.5px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    background: none;
-    border: none;
-    padding: 14px 16px;
-    color: #6b6250;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: color .15s, border-color .15s;
-  }
-  nav.tabs button.active{
-    color: var(--navy);
-    border-bottom-color: var(--gold);
-    font-weight: 600;
-  }
-  main{
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 24px 16px 80px;
-  }
-  .view{ display:none; }
-  .view.active{ display:block; }
+:root{
+  --navy:#0d1b2e;--navy-2:#16283f;--gold:#c9a04d;--gold-light:#e2c789;
+  --cream:#f6f2e8;--cream-dim:#ece4d2;--ink:#1b2432;--line:rgba(201,160,77,0.25);
+  --ok:#4a7c59;--red:#a0483f;
+  --serif:'Source Serif 4',Georgia,serif;
+  --display:'Playfair Display',Georgia,serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--cream);color:var(--ink);font-family:var(--serif);min-height:100vh;}
 
-  .empty{
-    text-align:center;
-    padding: 60px 20px;
-    color:#8a8171;
-    font-family: var(--serif);
-    font-size: 15px;
-  }
-  .empty .big{
-    font-family: var(--display);
-    font-size: 20px;
-    color: var(--navy);
-    margin-bottom: 6px;
-  }
+/* Header */
+header{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:var(--cream);padding:24px 20px 18px;border-bottom:3px solid var(--gold);}
+header .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-light);margin-bottom:4px;}
+header h1{font-family:var(--display);font-weight:800;font-size:26px;}
+header .gear{position:absolute;top:24px;right:20px;background:none;border:none;color:var(--gold-light);font-size:22px;cursor:pointer;}
 
-  /* Calendrier */
-  .cal-item{
-    display:flex;
-    gap: 16px;
-    align-items:center;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius: 4px;
-    padding: 12px 16px;
-    margin-bottom: 10px;
-  }
-  .cal-date{
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--navy);
-    background: var(--cream-dim);
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    padding: 6px 10px;
-    min-width: 78px;
-    text-align:center;
-    flex-shrink:0;
-  }
-  .cal-date.soon{ background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight:600;}
-  .cal-info .show-name{ font-weight:600; color: var(--navy); font-family: var(--display); font-size: 16px;}
-  .cal-info .ep-label{ font-family: var(--mono); font-size: 12px; color:#6b6250; margin-top:2px;}
+/* Tabs */
+nav.tabs{display:flex;gap:2px;max-width:900px;margin:0 auto;padding:0 12px;position:sticky;top:0;background:var(--cream);z-index:10;border-bottom:1px solid var(--line);}
+nav.tabs button{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;padding:13px 14px;color:#6b6250;cursor:pointer;border-bottom:2px solid transparent;transition:.15s;}
+nav.tabs button.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:600;}
 
-  /* Mes séries */
-  .show-card{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius: 4px;
-    margin-bottom: 14px;
-    overflow:hidden;
-  }
-  .show-head{
-    display:flex;
-    gap:14px;
-    padding: 14px 16px;
-    cursor:pointer;
-    align-items:center;
-  }
-  .show-head img{
-    width:46px; height:69px; object-fit:cover; border-radius:3px; border:1px solid var(--line); background:var(--cream-dim);
-    flex-shrink:0;
-  }
-  .show-head .meta{ flex:1; min-width:0; }
-  .show-head .show-name{ font-family: var(--display); font-weight:700; font-size:17px; color:var(--navy); }
-  .show-head .status{ font-family: var(--mono); font-size:11px; color:#8a8171; text-transform:uppercase; letter-spacing:.05em;}
-  .progress-bar{
-    height:6px; background: var(--cream-dim); border-radius:3px; overflow:hidden; margin-top:6px;
-  }
-  .progress-bar > div{ height:100%; background: var(--gold); }
-  .progress-pct{ font-family: var(--mono); font-size: 12px; color: var(--navy); flex-shrink:0; }
-  .unfollow{
-    font-family: var(--mono); font-size: 11px; color:#a0483f; background:none; border:1px solid #a0483f33; border-radius:3px;
-    padding: 5px 8px; cursor:pointer; flex-shrink:0;
-  }
-  .seasons{ display:none; border-top:1px solid var(--line); padding: 10px 16px 14px; background: var(--cream); }
-  .seasons.open{ display:block; }
-  .season-block{ margin-top: 10px; }
-  .season-title{ font-family: var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em; color: var(--navy); margin-bottom:6px; display:flex; justify-content:space-between;}
-  .ep-grid{ display:flex; flex-wrap:wrap; gap:6px; }
-  .ep-dot{
-    width: 30px; height:30px; border-radius:3px; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center;
-    font-family: var(--mono); font-size: 11px; color:#8a8171; cursor:pointer; background:#fff;
-    transition: background .1s, color .1s;
-  }
-  .ep-dot.watched{ background: var(--ok); border-color: var(--ok); color:#fff; }
+main{max-width:900px;margin:0 auto;padding:20px 14px 80px;}
+.view{display:none;}.view.active{display:block;}
 
-  /* Recherche */
-  .search-box{ display:flex; gap:8px; margin-bottom: 18px; }
-  .search-box input{
-    flex:1; font-family: var(--serif); font-size:15px; padding:11px 14px;
-    border:1px solid var(--line); border-radius:4px; background:#fff;
-  }
-  .search-box button{
-    font-family: var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em;
-    background: var(--navy); color: var(--cream); border:none; border-radius:4px; padding: 0 18px; cursor:pointer;
-  }
-  .result-card{
-    display:flex; gap:14px; align-items:center; background:#fff; border:1px solid var(--line); border-radius:4px;
-    padding: 12px 16px; margin-bottom: 10px;
-  }
-  .result-card img{ width:42px; height:63px; object-fit:cover; border-radius:3px; background:var(--cream-dim); flex-shrink:0;}
-  .result-card .meta{ flex:1; min-width:0; }
-  .result-card .r-name{ font-family: var(--display); font-weight:600; font-size:15.5px; color:var(--navy); }
-  .result-card .r-date{ font-family: var(--mono); font-size:11.5px; color:#8a8171; }
-  .follow-btn{
-    font-family: var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.04em;
-    background: var(--gold); color: var(--navy); border:none; border-radius:3px; padding:7px 12px; cursor:pointer; font-weight:600;
-    flex-shrink:0;
-  }
-  .follow-btn:disabled{ background: var(--cream-dim); color:#8a8171; cursor:default; }
+/* Setup banner */
+.setup-banner{background:var(--navy);color:var(--cream);padding:20px;border-radius:6px;margin-bottom:20px;font-size:14px;line-height:1.6;}
+.setup-banner b{color:var(--gold-light);}
+.setup-banner button{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:8px 16px;cursor:pointer;font-weight:600;}
 
-  footer{
-    text-align:center; padding: 30px 16px 40px; font-family: var(--mono); font-size: 10.5px;
-    color:#a89f8c; letter-spacing:.04em;
-  }
-  footer a{ color:#8a8171; }
+/* Empty state */
+.empty{text-align:center;padding:50px 20px;color:#8a8171;font-size:14.5px;}
+.empty .big{font-family:var(--display);font-size:19px;color:var(--navy);margin-bottom:6px;}
 
-  .toast{
-    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-    background: var(--navy); color:var(--cream); font-family: var(--mono); font-size:12px;
-    padding:10px 18px; border-radius:4px; border:1px solid var(--gold); opacity:0; pointer-events:none;
-    transition: opacity .2s; z-index:100;
-  }
-  .toast.show{ opacity:1; }
+/* Calendrier */
+.cal-item{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:4px;padding:11px 14px;margin-bottom:9px;}
+.cal-date{font-family:var(--mono);font-size:11.5px;color:var(--navy);background:var(--cream-dim);border:1px solid var(--line);border-radius:3px;padding:5px 9px;min-width:72px;text-align:center;flex-shrink:0;}
+.cal-date.soon{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600;}
+.cal-info .show-name{font-weight:600;color:var(--navy);font-family:var(--display);font-size:15px;}
+.cal-info .ep-label{font-family:var(--mono);font-size:11.5px;color:#6b6250;margin-top:2px;}
+.cal-platform{font-family:var(--mono);font-size:10px;color:#8a8171;background:var(--cream-dim);border-radius:3px;padding:3px 7px;margin-left:auto;flex-shrink:0;}
+
+/* Show cards */
+.show-card{background:#fff;border:1px solid var(--line);border-radius:4px;margin-bottom:12px;overflow:hidden;}
+.show-head{display:flex;gap:12px;padding:12px 14px;cursor:pointer;align-items:center;}
+.show-head img{width:42px;height:63px;object-fit:cover;border-radius:3px;border:1px solid var(--line);background:var(--cream-dim);flex-shrink:0;}
+.show-head .meta{flex:1;min-width:0;}
+.show-head .show-name{font-family:var(--display);font-weight:700;font-size:15.5px;color:var(--navy);}
+.show-head .status{font-family:var(--mono);font-size:10.5px;color:#8a8171;text-transform:uppercase;letter-spacing:.04em;}
+.progress-bar{height:5px;background:var(--cream-dim);border-radius:3px;overflow:hidden;margin-top:5px;}
+.progress-bar>div{height:100%;background:var(--gold);transition:width .3s;}
+.progress-pct{font-family:var(--mono);font-size:11.5px;color:var(--navy);flex-shrink:0;}
+.btn-remove{font-family:var(--mono);font-size:10px;color:var(--red);background:none;border:1px solid rgba(160,72,63,.2);border-radius:3px;padding:4px 7px;cursor:pointer;flex-shrink:0;}
+.seasons{display:none;border-top:1px solid var(--line);padding:10px 14px 14px;background:var(--cream);}
+.seasons.open{display:block;}
+.season-block{margin-top:8px;}
+.season-hdr{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--navy);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.mark-all{font-size:10px;color:var(--gold);cursor:pointer;border:1px solid var(--line);border-radius:3px;padding:2px 7px;background:none;font-family:var(--mono);}
+.ep-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.ep-dot{width:28px;height:28px;border-radius:3px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:#8a8171;cursor:pointer;background:#fff;transition:.1s;}
+.ep-dot.watched{background:var(--ok);border-color:var(--ok);color:#fff;}
+
+/* Search */
+.search-box{display:flex;gap:8px;margin-bottom:16px;}
+.search-box input{flex:1;font-family:var(--serif);font-size:14.5px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:#fff;}
+.search-box button{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;background:var(--navy);color:var(--cream);border:none;border-radius:4px;padding:0 16px;cursor:pointer;}
+.result-card{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:4px;padding:11px 14px;margin-bottom:9px;}
+.result-card img{width:40px;height:60px;object-fit:cover;border-radius:3px;background:var(--cream-dim);flex-shrink:0;}
+.result-card .meta{flex:1;min-width:0;}
+.result-card .r-name{font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--navy);}
+.result-card .r-sub{font-family:var(--mono);font-size:11px;color:#8a8171;}
+.follow-btn{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:6px 11px;cursor:pointer;font-weight:600;flex-shrink:0;}
+.follow-btn:disabled{background:var(--cream-dim);color:#8a8171;cursor:default;}
+
+/* Settings modal */
+.modal-bg{position:fixed;inset:0;background:rgba(13,27,46,.6);z-index:50;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--cream);border:2px solid var(--gold);border-radius:6px;padding:28px 24px;max-width:440px;width:92%;max-height:90vh;overflow-y:auto;}
+.modal h2{font-family:var(--display);font-size:20px;color:var(--navy);margin-bottom:16px;}
+.modal label{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6b6250;margin-bottom:4px;margin-top:14px;}
+.modal input{width:100%;font-family:var(--mono);font-size:13px;padding:9px 10px;border:1px solid var(--line);border-radius:3px;background:#fff;}
+.modal .help{font-size:12px;color:#8a8171;margin-top:3px;line-height:1.5;}
+.modal .help a{color:var(--gold);text-decoration:none;}
+.modal .help a:hover{text-decoration:underline;}
+.modal-actions{display:flex;gap:10px;margin-top:22px;}
+.modal-actions button{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:9px 18px;border-radius:3px;cursor:pointer;border:none;}
+.btn-save{background:var(--gold);color:var(--navy);font-weight:600;}
+.btn-cancel{background:none;border:1px solid var(--line)!important;color:#6b6250;}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--cream);font-family:var(--mono);font-size:11.5px;padding:9px 16px;border-radius:4px;border:1px solid var(--gold);opacity:0;pointer-events:none;transition:.2s;z-index:100;}
+.toast.show{opacity:1;}
+
+footer{text-align:center;padding:28px 14px 36px;font-family:var(--mono);font-size:10px;color:#a89f8c;letter-spacing:.04em;}
+footer a{color:#8a8171;}
 </style>
 </head>
 <body>
 
-<header>
+<header style="position:relative;">
   <div class="eyebrow">Marc Vasseur · Suivi personnel</div>
-  <h1>Suivi Séries</h1>
+  <h1>Tv Time</h1>
+  <button class="gear" onclick="openSettings()" title="Réglages">⚙</button>
 </header>
 
 <nav class="tabs">
@@ -227,6 +119,8 @@
 </nav>
 
 <main>
+  <div id="setup-banner"></div>
+
   <section id="view-calendrier" class="view active">
     <div id="cal-list"><div class="empty">Chargement…</div></div>
   </section>
@@ -246,78 +140,162 @@
 
 <footer>
   MARC VASSEUR · POLYTECH LILLE — marc.vasseur@polytech-lille.fr<br>
-  Données séries fournies par TMDB — usage privé
+  Données fournies par <a href="https://www.themoviedb.org/" target="_blank">TMDB</a> — usage privé
 </footer>
+
+<!-- Settings modal -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h2>Réglages</h2>
+    <label>Clé API TMDB (v3)</label>
+    <input type="text" id="cfg-tmdb" placeholder="Ex: a1b2c3d4e5f6…">
+    <div class="help">Gratuit → <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a><br>Crée un compte, demande une clé "Developer", copie la clé v3.</div>
+
+    <label>Token GitHub (scope gist)</label>
+    <input type="text" id="cfg-token" placeholder="ghp_…">
+    <div class="help"><a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> → nouveau token classic → coche seulement <b>gist</b>.</div>
+
+    <div class="modal-actions">
+      <button class="btn-save" onclick="saveSettings()">Enregistrer</button>
+      <button class="btn-cancel" onclick="closeSettings()">Annuler</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const IMG_BASE = "https://image.tmdb.org/t/p/w154";
-let state = { shows: [] };
-let saveTimer = null;
+const IMG = "https://image.tmdb.org/t/p/w154";
+const TMDB = "https://api.themoviedb.org/3";
+const GIST_FILE = "tv-time-data.json";
 
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(()=> t.classList.remove('show'), 2200);
+// ---- Config ----
+function cfg(k,v){ if(v!==undefined){ localStorage.setItem("tvt_"+k,v); return v; } return localStorage.getItem("tvt_"+k)||""; }
+function hasCfg(){ return cfg("tmdb") && cfg("token"); }
+
+function openSettings(){
+  document.getElementById("cfg-tmdb").value = cfg("tmdb");
+  document.getElementById("cfg-token").value = cfg("token");
+  document.getElementById("modal-bg").classList.add("open");
+}
+function closeSettings(){ document.getElementById("modal-bg").classList.remove("open"); }
+
+async function saveSettings(){
+  const tmdb = document.getElementById("cfg-tmdb").value.trim();
+  const token = document.getElementById("cfg-token").value.trim();
+  if(!tmdb||!token){ toast("Les deux champs sont requis"); return; }
+  cfg("tmdb",tmdb); cfg("token",token);
+  closeSettings();
+  toast("Réglages enregistrés");
+  updateBanner();
+  await initData();
 }
 
-// ---- Tabs ----
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('view-'+btn.dataset.view).classList.add('active');
-    if(btn.dataset.view === 'calendrier') renderCalendrier();
-  });
-});
+function updateBanner(){
+  const el = document.getElementById("setup-banner");
+  if(hasCfg()){ el.innerHTML=""; return; }
+  el.innerHTML = `<div class="setup-banner">
+    <b>Bienvenue !</b> Pour commencer, configure ta clé TMDB et ton token GitHub.<br>
+    Ça prend 2 minutes et c'est une seule fois.
+    <br><button onclick="openSettings()">Configurer</button>
+  </div>`;
+}
 
-// ---- Data load/save ----
-async function loadShows(){
-  try{
-    const r = await fetch('/api/shows');
-    if(!r.ok) throw new Error('load failed');
-    state = await r.json();
-    if(!Array.isArray(state.shows)) state.shows = [];
-  }catch(e){
-    state = { shows: [] };
-    toast("Erreur de chargement des données");
+// ---- Data (Gist sync) ----
+let state = { shows:[] };
+let gistId = "";
+let saveTimer = null;
+
+async function initData(){
+  if(!hasCfg()) return;
+  // Find or create gist
+  gistId = cfg("gistId");
+  if(!gistId){
+    gistId = await findOrCreateGist();
+    if(gistId) cfg("gistId",gistId);
   }
+  if(gistId) await loadFromGist();
   renderMesSeries();
   renderCalendrier();
 }
 
-function saveShows(){
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(async ()=>{
-    try{
-      await fetch('/api/shows', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(state)
-      });
-    }catch(e){
-      toast("Erreur d'enregistrement");
+async function findOrCreateGist(){
+  try{
+    // Search existing gists for our file
+    const r = await fetch("https://api.github.com/gists?per_page=100",{headers:ghHeaders()});
+    const gists = await r.json();
+    for(const g of gists){
+      if(g.files[GIST_FILE]) return g.id;
     }
-  }, 500);
+    // Create new gist
+    const cr = await fetch("https://api.github.com/gists",{
+      method:"POST", headers:ghHeaders(),
+      body:JSON.stringify({ description:"Tv Time — données de suivi", public:false,
+        files:{ [GIST_FILE]:{ content:JSON.stringify({shows:[]}) } }
+      })
+    });
+    const cdata = await cr.json();
+    if(cdata.id){ toast("Stockage créé automatiquement"); return cdata.id; }
+    toast("Erreur création Gist"); return "";
+  }catch(e){ toast("Erreur GitHub: "+e.message); return ""; }
 }
 
-// ---- Recherche ----
-document.getElementById('search-btn').addEventListener('click', doSearch);
-document.getElementById('search-input').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+function ghHeaders(){ return { Authorization:"token "+cfg("token"), Accept:"application/vnd.github+json", "Content-Type":"application/json" }; }
+
+async function loadFromGist(){
+  try{
+    const r = await fetch("https://api.github.com/gists/"+gistId,{headers:ghHeaders()});
+    const g = await r.json();
+    const f = g.files[GIST_FILE];
+    if(f){ state = JSON.parse(f.content); if(!Array.isArray(state.shows)) state.shows=[]; }
+  }catch(e){ console.error("load gist",e); }
+}
+
+function saveToGist(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async()=>{
+    if(!gistId) return;
+    try{
+      await fetch("https://api.github.com/gists/"+gistId,{
+        method:"PATCH", headers:ghHeaders(),
+        body:JSON.stringify({ files:{ [GIST_FILE]:{ content:JSON.stringify(state) } } })
+      });
+    }catch(e){ toast("Erreur de sauvegarde"); }
+  },600);
+}
+
+// ---- TMDB ----
+async function tmdbGet(path){
+  const sep = path.includes("?") ? "&" : "?";
+  const r = await fetch(TMDB+path+sep+"api_key="+cfg("tmdb")+"&language=fr-FR");
+  if(!r.ok) throw new Error("TMDB "+r.status);
+  return r.json();
+}
+
+// ---- Tabs ----
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    if(btn.dataset.view==='calendrier') renderCalendrier();
+  });
+});
+
+// ---- Search ----
+document.getElementById('search-btn').addEventListener('click',doSearch);
+document.getElementById('search-input').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
 
 async function doSearch(){
+  if(!hasCfg()){ openSettings(); return; }
   const q = document.getElementById('search-input').value.trim();
   const box = document.getElementById('search-results');
-  if(!q){ return; }
+  if(!q) return;
   box.innerHTML = '<div class="empty">Recherche…</div>';
   try{
-    const r = await fetch('/api/tmdb?action=search&query='+encodeURIComponent(q));
-    const data = await r.json();
-    if(!data.results || data.results.length===0){
+    const data = await tmdbGet("/search/tv?query="+encodeURIComponent(q));
+    if(!data.results||!data.results.length){
       box.innerHTML = '<div class="empty"><div class="big">Aucun résultat</div>Essaie un autre titre.</div>';
       return;
     }
@@ -327,205 +305,188 @@ async function doSearch(){
       const div = document.createElement('div');
       div.className = 'result-card';
       div.innerHTML = `
-        <img src="${show.poster_path ? IMG_BASE+show.poster_path : ''}" alt="">
+        <img src="${show.poster_path?IMG+show.poster_path:''}" alt="">
         <div class="meta">
-          <div class="r-name">${escapeHtml(show.name)}</div>
-          <div class="r-date">${show.first_air_date ? show.first_air_date.slice(0,4) : 'Date inconnue'}</div>
+          <div class="r-name">${esc(show.name)}</div>
+          <div class="r-sub">${show.first_air_date?show.first_air_date.slice(0,4):'?'}</div>
         </div>
-        <button class="follow-btn" ${already?'disabled':''}>${already?'Suivie':'Suivre'}</button>
-      `;
-      div.querySelector('.follow-btn').addEventListener('click', ()=> followShow(show.id, div.querySelector('.follow-btn')));
+        <button class="follow-btn" ${already?'disabled':''}>${already?'Suivie':'Suivre'}</button>`;
+      div.querySelector('.follow-btn').addEventListener('click',()=>followShow(show.id,div.querySelector('.follow-btn')));
       box.appendChild(div);
     });
-  }catch(e){
-    box.innerHTML = '<div class="empty">Erreur de recherche</div>';
-  }
+  }catch(e){ box.innerHTML = '<div class="empty">Erreur de recherche</div>'; }
 }
 
-async function followShow(id, btnEl){
-  btnEl.disabled = true;
-  btnEl.textContent = '…';
+async function followShow(id,btn){
+  btn.disabled=true; btn.textContent='…';
   try{
-    const r = await fetch('/api/tmdb?action=details&id='+id);
-    const d = await r.json();
+    const d = await tmdbGet("/tv/"+id);
     const show = {
-      id: d.id,
-      name: d.name,
-      poster_path: d.poster_path,
-      status: d.status,
-      next_episode_to_air: d.next_episode_to_air || null,
-      seasons: (d.seasons||[]).filter(s=>s.season_number>0).map(s=>({
-        season_number: s.season_number,
-        name: s.name,
-        episode_count: s.episode_count
+      id:d.id, name:d.name, poster_path:d.poster_path, status:d.status,
+      networks:(d.networks||[]).map(n=>n.name).join(", "),
+      seasons:(d.seasons||[]).filter(s=>s.season_number>0).map(s=>({
+        season_number:s.season_number, name:s.name, episode_count:s.episode_count
       })),
-      watched: {}
+      watched:{}
     };
     state.shows.push(show);
-    saveShows();
+    saveToGist();
     renderMesSeries();
-    btnEl.textContent = 'Suivie';
-    toast(`"${d.name}" ajoutée`);
-  }catch(e){
-    btnEl.disabled = false;
-    btnEl.textContent = 'Suivre';
-    toast("Erreur lors de l'ajout");
-  }
-}
-
-function unfollowShow(id){
-  if(!confirm('Ne plus suivre cette série ? La progression sera perdue.')) return;
-  state.shows = state.shows.filter(s=>s.id!==id);
-  saveShows();
-  renderMesSeries();
-  renderCalendrier();
+    btn.textContent='Suivie';
+    toast('"'+d.name+'" ajoutée');
+  }catch(e){ btn.disabled=false; btn.textContent='Suivre'; toast("Erreur"); }
 }
 
 // ---- Mes séries ----
 function renderMesSeries(){
   const box = document.getElementById('shows-list');
-  if(state.shows.length===0){
+  if(!state.shows.length){
     box.innerHTML = '<div class="empty"><div class="big">Aucune série suivie</div>Ajoute-en depuis l\'onglet Rechercher.</div>';
     return;
   }
   box.innerHTML = '';
   state.shows.forEach(show=>{
     const total = show.seasons.reduce((a,s)=>a+s.episode_count,0);
-    const watchedCount = Object.values(show.watched||{}).reduce((a,arr)=>a+arr.length,0);
-    const pct = total>0 ? Math.round((watchedCount/total)*100) : 0;
-
+    const wCount = Object.values(show.watched||{}).reduce((a,arr)=>a+arr.length,0);
+    const pct = total>0 ? Math.round(wCount/total*100) : 0;
     const card = document.createElement('div');
     card.className = 'show-card';
     card.innerHTML = `
       <div class="show-head">
-        <img src="${show.poster_path ? IMG_BASE+show.poster_path : ''}" alt="">
+        <img src="${show.poster_path?IMG+show.poster_path:''}" alt="">
         <div class="meta">
-          <div class="show-name">${escapeHtml(show.name)}</div>
-          <div class="status">${statusLabel(show.status)} · ${watchedCount}/${total} épisodes</div>
+          <div class="show-name">${esc(show.name)}</div>
+          <div class="status">${statusLabel(show.status)} · ${wCount}/${total} ép.${show.networks?' · '+esc(show.networks):''}</div>
           <div class="progress-bar"><div style="width:${pct}%"></div></div>
         </div>
         <div class="progress-pct">${pct}%</div>
-        <button class="unfollow">Retirer</button>
+        <button class="btn-remove">✕</button>
       </div>
-      <div class="seasons"></div>
-    `;
+      <div class="seasons"></div>`;
     const head = card.querySelector('.show-head');
     const seasonsBox = card.querySelector('.seasons');
-    head.addEventListener('click', (e)=>{
-      if(e.target.classList.contains('unfollow')) return;
+    head.addEventListener('click',e=>{
+      if(e.target.classList.contains('btn-remove')) return;
       seasonsBox.classList.toggle('open');
-      if(seasonsBox.classList.contains('open') && !seasonsBox.dataset.built){
-        buildSeasons(seasonsBox, show);
-        seasonsBox.dataset.built = '1';
+      if(seasonsBox.classList.contains('open')&&!seasonsBox.dataset.built){
+        buildSeasons(seasonsBox,show);
+        seasonsBox.dataset.built='1';
       }
     });
-    card.querySelector('.unfollow').addEventListener('click', (e)=>{ e.stopPropagation(); unfollowShow(show.id); });
+    card.querySelector('.btn-remove').addEventListener('click',e=>{
+      e.stopPropagation();
+      if(confirm('Retirer "'+show.name+'" ? La progression sera perdue.')){
+        state.shows = state.shows.filter(s=>s.id!==show.id);
+        saveToGist(); renderMesSeries(); renderCalendrier();
+      }
+    });
     box.appendChild(card);
   });
 }
 
-function buildSeasons(container, show){
+function buildSeasons(container,show){
   show.seasons.forEach(season=>{
-    const watchedEps = new Set((show.watched[season.season_number]||[]));
+    const watched = new Set(show.watched[season.season_number]||[]);
     const block = document.createElement('div');
     block.className = 'season-block';
-    const watchedN = watchedEps.size;
-    block.innerHTML = `<div class="season-title"><span>${escapeHtml(season.name)}</span><span>${watchedN}/${season.episode_count}</span></div>
-      <div class="ep-grid"></div>`;
+    block.innerHTML = `<div class="season-hdr"><span>${esc(season.name)} — ${watched.size}/${season.episode_count}</span><button class="mark-all">${watched.size===season.episode_count?'Tout décocher':'Tout cocher'}</button></div><div class="ep-grid"></div>`;
     const grid = block.querySelector('.ep-grid');
-    for(let ep=1; ep<=season.episode_count; ep++){
+    const dots = [];
+    for(let ep=1;ep<=season.episode_count;ep++){
       const dot = document.createElement('div');
-      dot.className = 'ep-dot' + (watchedEps.has(ep) ? ' watched' : '');
+      dot.className = 'ep-dot'+(watched.has(ep)?' watched':'');
       dot.textContent = ep;
-      dot.addEventListener('click', ()=>{
-        if(!show.watched[season.season_number]) show.watched[season.season_number] = [];
+      dot.addEventListener('click',()=>{
+        if(!show.watched[season.season_number]) show.watched[season.season_number]=[];
         const arr = show.watched[season.season_number];
         const idx = arr.indexOf(ep);
         if(idx>=0){ arr.splice(idx,1); dot.classList.remove('watched'); }
-        else { arr.push(ep); dot.classList.add('watched'); }
-        saveShows();
-        // update header counts without full rerender
-        const total = show.seasons.reduce((a,s)=>a+s.episode_count,0);
-        const watchedCount = Object.values(show.watched).reduce((a,a2)=>a+a2.length,0);
-        renderMesSeries();
+        else{ arr.push(ep); dot.classList.add('watched'); }
+        saveToGist();
+        updateSeasonHdr(block,season,show);
+        updateCardHeader(show);
       });
+      dots.push(dot);
       grid.appendChild(dot);
     }
+    block.querySelector('.mark-all').addEventListener('click',()=>{
+      const allWatched = (show.watched[season.season_number]||[]).length===season.episode_count;
+      if(allWatched){ show.watched[season.season_number]=[]; dots.forEach(d=>d.classList.remove('watched')); }
+      else{ show.watched[season.season_number]=[...Array(season.episode_count)].map((_,i)=>i+1); dots.forEach(d=>d.classList.add('watched')); }
+      saveToGist();
+      updateSeasonHdr(block,season,show);
+      updateCardHeader(show);
+    });
     container.appendChild(block);
   });
 }
 
+function updateSeasonHdr(block,season,show){
+  const w = (show.watched[season.season_number]||[]).length;
+  const hdr = block.querySelector('.season-hdr span');
+  hdr.textContent = season.name+' — '+w+'/'+season.episode_count;
+  const btn = block.querySelector('.mark-all');
+  btn.textContent = w===season.episode_count?'Tout décocher':'Tout cocher';
+}
+
+function updateCardHeader(show){
+  // re-render full list to update progress bars
+  renderMesSeries();
+}
+
 function statusLabel(s){
-  const map = { 'Returning Series':'En cours', 'Ended':'Terminée', 'Canceled':'Annulée', 'In Production':'En production' };
-  return map[s] || (s||'—');
+  const m={'Returning Series':'En cours','Ended':'Terminée','Canceled':'Annulée','In Production':'En production','Planned':'Prévue'};
+  return m[s]||(s||'—');
 }
 
 // ---- Calendrier ----
 async function renderCalendrier(){
   const box = document.getElementById('cal-list');
-  if(state.shows.length===0){
-    box.innerHTML = '<div class="empty"><div class="big">Rien à venir</div>Suis des séries pour voir leur calendrier de sortie.</div>';
-    return;
-  }
-  box.innerHTML = '<div class="empty">Chargement du calendrier…</div>';
+  if(!hasCfg()){ box.innerHTML='<div class="empty"><div class="big">Configure tes réglages</div>Clique sur ⚙ en haut à droite.</div>'; return; }
+  if(!state.shows.length){ box.innerHTML='<div class="empty"><div class="big">Rien à venir</div>Suis des séries pour voir leur calendrier.</div>'; return; }
+  box.innerHTML='<div class="empty">Chargement du calendrier…</div>';
   try{
-    const details = await Promise.all(state.shows.map(s=>
-      fetch('/api/tmdb?action=details&id='+s.id).then(r=>r.json()).catch(()=>null)
-    ));
+    const details = await Promise.all(state.shows.map(s=>tmdbGet("/tv/"+s.id).catch(()=>null)));
     const items = [];
-    details.forEach((d, i)=>{
-      if(d && d.next_episode_to_air){
+    details.forEach((d,i)=>{
+      if(d&&d.next_episode_to_air){
+        const ne = d.next_episode_to_air;
         items.push({
-          name: state.shows[i].name,
-          date: d.next_episode_to_air.air_date,
-          season: d.next_episode_to_air.season_number,
-          episode: d.next_episode_to_air.episode_number,
-          epName: d.next_episode_to_air.name
+          name:state.shows[i].name, date:ne.air_date,
+          season:ne.season_number, episode:ne.episode_number, epName:ne.name,
+          network:(d.networks||[]).map(n=>n.name).join(", ")
         });
       }
     });
-    items.sort((a,b)=> a.date.localeCompare(b.date));
-    if(items.length===0){
-      box.innerHTML = '<div class="empty"><div class="big">Rien de prévu</div>Aucune date de sortie connue pour tes séries suivies.</div>';
-      return;
-    }
+    items.sort((a,b)=>a.date.localeCompare(b.date));
+    if(!items.length){ box.innerHTML='<div class="empty"><div class="big">Rien de prévu</div>Aucune date de sortie connue.</div>'; return; }
     const today = new Date().toISOString().slice(0,10);
-    box.innerHTML = '';
+    box.innerHTML='';
     items.forEach(it=>{
-      const soon = it.date <= addDays(today, 7);
+      const soon = it.date<=addDays(today,7);
       const div = document.createElement('div');
-      div.className = 'cal-item';
-      div.innerHTML = `
-        <div class="cal-date ${soon?'soon':''}">${formatDate(it.date)}</div>
+      div.className='cal-item';
+      div.innerHTML=`
+        <div class="cal-date ${soon?'soon':''}">${fmtDate(it.date)}</div>
         <div class="cal-info">
-          <div class="show-name">${escapeHtml(it.name)}</div>
-          <div class="ep-label">S${it.season} E${it.episode}${it.epName ? ' — '+escapeHtml(it.epName) : ''}</div>
+          <div class="show-name">${esc(it.name)}</div>
+          <div class="ep-label">S${it.season} E${it.episode}${it.epName?' — '+esc(it.epName):''}</div>
         </div>
-      `;
+        ${it.network?'<div class="cal-platform">'+esc(it.network)+'</div>':''}`;
       box.appendChild(div);
     });
-  }catch(e){
-    box.innerHTML = '<div class="empty">Erreur de chargement du calendrier</div>';
-  }
+  }catch(e){ box.innerHTML='<div class="empty">Erreur de chargement</div>'; }
 }
 
-function addDays(dateStr, n){
-  const d = new Date(dateStr);
-  d.setDate(d.getDate()+n);
-  return d.toISOString().slice(0,10);
-}
-function formatDate(dateStr){
-  const d = new Date(dateStr+'T00:00:00');
-  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
-}
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str||'';
-  return div.innerHTML;
-}
+// ---- Helpers ----
+function addDays(d,n){ const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10); }
+function fmtDate(d){ return new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}); }
+function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
+function toast(msg){ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400); }
 
-loadShows();
+// ---- Init ----
+updateBanner();
+initData();
 </script>
-
 </body>
 </html>
